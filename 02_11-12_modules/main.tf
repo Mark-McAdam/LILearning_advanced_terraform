@@ -27,30 +27,30 @@ resource "aws_security_group" "sg_frontend" {
   vpc_id = module.vpc.vpc_id
 
   ingress {
-    from_port = 80
-    to_port = 80
-    protocol = "tcp"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    from_port = 443
-    to_port = 443
-    protocol = "tcp"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -59,10 +59,17 @@ resource "aws_security_group" "sg_frontend" {
 # //////////////////////////////
 # MODULES
 # //////////////////////////////
+# vpc module will create each subnet in a different az
+# first subnet created in first az
+# vpc requires IGW route table entries and associations, this module 
+# does a lot under the hood
+# code reduction is a byproduct of proper organization and breaking down 
+# resources into logical 
+
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
-  name = "frontend-vpc"
-  cidr = "10.0.0.0/16"
+  name   = "frontend-vpc"
+  cidr   = "10.0.0.0/16"
 
   azs             = ["us-east-2a", "us-east-2b", "us-east-2c"]
   private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
